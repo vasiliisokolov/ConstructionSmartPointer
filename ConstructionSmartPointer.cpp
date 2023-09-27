@@ -25,24 +25,56 @@ public:
 
 };
 
+class ptr_counter
+{
+private:
+
+    int count;
+
+public:
+
+    ptr_counter()
+    {
+        count = 0;
+    }
+
+    int getCount()
+    {
+        return count;
+    }
+
+    void addCount()
+    {
+        count++;
+    }
+
+    void deCount()
+    {
+        count--;
+    }
+};
+
 class smart_ptr_toy
 {
 private:
 
     Toy* obj;
-    int useCount;
-
+    ptr_counter* counter;
+    
 public:
 
     smart_ptr_toy(std::string inName)
     {
         obj = new Toy(inName);
-        useCount++;
+        counter = new ptr_counter();
+        counter->addCount();
     }
 
     smart_ptr_toy(const smart_ptr_toy& other)
     {
         obj = new Toy(*other.obj);
+        counter = other.counter;
+        counter->addCount();
     }
 
     smart_ptr_toy& operator=(const smart_ptr_toy& other)
@@ -57,14 +89,14 @@ public:
 
     ~smart_ptr_toy()
     {
-        if (useCount == 0)
+        counter->deCount();
+
+        if (counter->getCount() == 0)
         {
+            delete counter;
             delete obj;
         }
-        else
-        {
-            useCount--;
-        }
+        
     }
 };
 
@@ -94,10 +126,6 @@ public:
 
 int main()
 {
-    std::shared_ptr<Toy> ball = std::make_shared<Toy>("Ball");
-    std::shared_ptr<Toy> bone = std::make_shared<Toy>("Bone");
-
-    std::shared_ptr<Dog> b = std::make_shared<Dog>();
-    std::shared_ptr<Dog> k = std::make_shared<Dog>("Korgi");
+    
     
 }
